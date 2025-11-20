@@ -1,0 +1,225 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Editar Usuario - Admin Clima</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(to top right, #bbdefb, #e3f2fd); /* Azul claro desvanecido */
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --primary: #0277bd;
+            --secondary: #4fc3f7;
+            --text-color: #333;
+            --input-bg: #f5f9fc;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .user-info {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .admin-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+
+        .flash-message {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccddee;
+            border-radius: var(--border-radius);
+            background-color: var(--input-bg);
+            font-size: 1rem;
+        }
+
+        .password-note {
+            background-color: #e3f2fd;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.4rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-warning {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #01579b;
+        }
+
+        .btn-secondary {
+            background-color: #cfd8dc;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #b0bec5;
+        }
+
+        @media (max-width: 500px) {
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☀️ Editar Usuario</h1>
+            <div class="user-info">
+                Hola, {{ username }} <span class="admin-badge">ADMIN</span>
+            </div>
+        </div>
+
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="form-container">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary); font-weight: 600;">
+                Editando: {{ usuario.username }}
+            </h2>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label class="form-label">Nombre de Usuario</label>
+                    <input type="text" name="username" class="form-input" required 
+                           value="{{ usuario.username }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-input" required 
+                           value="{{ usuario.email }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Rol</label>
+                    <select name="rol" class="form-select" required>
+                        <option value="user" {% if usuario.rol == 'user' %}selected{% endif %}>Usuario Normal</option>
+                        <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                    </select>
+                </div>
+
+                <div class="password-note">
+                    <strong>🔒 Contraseña:</strong> Deja este campo vacío si no quieres cambiar la contraseña actual.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nueva Contraseña (opcional)</label>
+                    <input type="password" name="nueva_password" class="form-input" 
+                           placeholder="Dejar vacío para mantener la actual">
+                </div>
+
+                <div class="btn-container">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">← Cancelar</a>
+                    <button type="submit" class="btn btn-warning">💾 Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

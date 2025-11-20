@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - ClimaScalientes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .auth-container {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #60a5fa, #3b82f6, #2563eb);
+        }
+
+        .weather-icon {
+            text-align: center;
+            font-size: 64px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 35px;
+            font-size: 32px;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para campos válidos/inválidos */
+        input:valid:not(:placeholder-shown) {
+            border-color: #10b981;
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .input-hint.valid {
+            color: #10b981;
+        }
+
+        .input-hint.invalid {
+            color: #ef4444;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button:disabled:hover::before {
+            left: -100%;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .links a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #93c5fd;
+        }
+
+        .links a:hover::after {
+            width: 100%;
+        }
+
+        .flash-messages {
+            margin-bottom: 25px;
+        }
+
+        .flash-message {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .flash-message.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .flash-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border-color: rgba(248, 113, 113, 0.3);
+        }
+
+        .flash-message.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .app-brand {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="weather-icon">🌧️</div>
+        <h1>ClimaScalientes</h1>
+        <p class="tagline">Únete para pronósticos precisos</p>
+
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <form action="{{ url_for('registro') }}" method="POST" id="registroForm">
+            <div class="form-group">
+                <input type="text" 
+                       name="username" 
+                       placeholder="Usuario" 
+                       pattern="[A-Za-záéíóúÁÉÍÓÚñÑ ]+" 
+                       title="Solo se permiten letras y espacios" 
+                       required>
+                <small class="input-hint">Solo letras y espacios</small>
+            </div>
+            <div class="form-group">
+                <input type="email" 
+                       name="email" 
+                       placeholder="Email" 
+                       title="Debe contener @" 
+                       required>
+                <small class="input-hint">Cualquier email válido con @</small>
+            </div>
+            <div class="form-group">
+                <input type="password" 
+                       name="password" 
+                       placeholder="Contraseña" 
+                       minlength="6" 
+                       required>
+                <small class="input-hint">Mínimo 6 caracteres</small>
+            </div>
+            <div class="form-group">
+                <input type="password" 
+                       name="confirm_password" 
+                       placeholder="Confirmar Contraseña" 
+                       required>
+            </div>
+            <button type="submit" id="submitBtn">Crear Cuenta</button>
+        </form>
+
+        <div class="links">
+            <p>¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a></p>
+        </div>
+        
+        <div class="app-brand">
+            <p>Tu clima, tu ciudad</p>
+        </div>
+    </div>
+
+    <script>
+        // Validación en tiempo real
+        document.getElementById('registroForm').addEventListener('input', function(e) {
+            const target = e.target;
+            const hint = target.parentElement.querySelector('.input-hint');
+            
+            if (target.name === 'username') {
+                const isValid = /^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$/.test(target.value);
+                updateValidationStyle(target, hint, isValid, 'Solo letras y espacios');
+            }
+            
+            if (target.name === 'email') {
+                const isValid = target.value.includes('@') && target.value.length > 3;
+                updateValidationStyle(target, hint, isValid, 'Debe contener @');
+            }
+            
+            if (target.name === 'password') {
+                const isValid = target.value.length >= 6;
+                updateValidationStyle(target, hint, isValid, 'Mínimo 6 caracteres');
+            }
+            
+            if (target.name === 'confirm_password') {
+                const password = document.querySelector('input[name="password"]').value;
+                const isValid = target.value === password && target.value.length >= 6;
+                updateValidationStyle(target, null, isValid, '');
+            }
+        });
+
+        function updateValidationStyle(input, hint, isValid, message) {
+            if (input.value === '') {
+                input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                if (hint) {
+                    hint.textContent = message;
+                    hint.className = 'input-hint';
+                }
+            } else {
+                input.style.borderColor = isValid ? '#10b981' : '#ef4444';
+                if (hint) {
+                    hint.textContent = isValid ? '✓ Válido' : message;
+                    hint.className = isValid ? 'input-hint valid' : 'input-hint invalid';
+                }
+            }
+        }
+
+        // Validación antes del envío
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            const username = document.querySelector('input[name="username"]');
+            const email = document.querySelector('input[name="email"]');
+            const password = document.querySelector('input[name="password"]');
+            const confirmPassword = document.querySelector('input[name="confirm_password"]');
+            
+            let isValid = true;
+            
+            // Validar username
+            if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$/.test(username.value)) {
+                isValid = false;
+                username.style.borderColor = '#ef4444';
+            }
+            
+            // Validar email (solo verificar que tenga @)
+            if (!email.value.includes('@')) {
+                isValid = false;
+                email.style.borderColor = '#ef4444';
+            }
+            
+            // Validar contraseña
+            if (password.value.length < 6) {
+                isValid = false;
+                password.style.borderColor = '#ef4444';
+            }
+            
+            // Validar confirmación
+            if (password.value !== confirmPassword.value) {
+                isValid = false;
+                confirmPassword.style.borderColor = '#ef4444';
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Por favor, corrige los errores en el formulario.');
+            }
+        });
+    </script>
+</body>
+</html>
