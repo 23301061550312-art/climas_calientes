@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Frases del Día - Sistema Clima</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 25, 40, 0.88), rgba(20, 30, 48, 0.92)), 
+                        url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2128&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 90px 30px 50px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .header-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .admin-title {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .admin-subtitle {
+            opacity: 0.95;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            color: #ecf0f1;
+            max-width: 700px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            min-width: 240px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(155, 89, 182, 0.5);
+            background: linear-gradient(135deg, #8e44ad, #7d3c98);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            min-width: auto;
+        }
+
+        .btn-icon {
+            font-size: 0.7rem;
+            margin-right: 3px;
+        }
+
+        .frases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .frase-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .frase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .frase-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+            border-color: rgba(155, 89, 182, 0.6);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .frase-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .frase-icon {
+            font-size: 2.5rem;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .frase-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ecf0f1;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .frase-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(52, 152, 219, 0.2));
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .frase-text:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(52, 152, 219, 0.3));
+        }
+
+        .frase-autor {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            text-align: right;
+            font-style: italic;
+        }
+
+        .frase-badge {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(155, 89, 182, 0.4));
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            padding: 16px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .flash-messages {
+            margin-bottom: 35px;
+        }
+
+        .flash-message {
+            padding: 24px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            font-size: 1.2rem;
+            line-height: 1.5;
+            transition: all 0.4s ease;
+        }
+
+        .flash-message.success {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+            color: white;
+            border-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .flash-message.error {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
+            color: white;
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+
+        .meta-info {
+            margin: 18px 0;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-info small {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .emergency-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 90%, rgba(155, 89, 182, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(142, 68, 173, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 30% 30%, rgba(52, 152, 219, 0.1) 0%, transparent 40%);
+            opacity: 0.6;
+        }
+
+        .frases-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        .frases-count span {
+            font-weight: 700;
+            color: #9b59b6;
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 10px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.4);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+
+        .status-inactive {
+            background: rgba(149, 165, 166, 0.4);
+            color: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            opacity: 0.7;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .frases-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .frase-card {
+                padding: 25px;
+            }
+            
+            .frase-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .admin-title {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                min-width: auto;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .frase-text {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 70px 20px 40px;
+            }
+            
+            .frase-card {
+                padding: 20px;
+            }
+            
+            .frases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-title {
+                font-size: 1.8rem;
+            }
+            
+            .frase-text {
+                font-size: 1rem;
+            }
+
+            .btn-danger {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+            
+            .btn-icon {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efecto de emergencia de fondo -->
+    <div class="emergency-overlay"></div>
+    
+    <div class="admin-container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-btn">
+            <span>←</span> Volver al Dashboard Principal
+        </a>
+
+        <div class="admin-header">
+            <div class="header-content">
+                <h1 class="admin-title">Administrar Frases del Día</h1>
+                <p class="admin-subtitle">
+                    Gestiona las frases motivadoras que aparecen en el sistema de clima
+                </p>
+                <div class="frases-count">
+                    Total de frases registradas: <span>{{ frases|length }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('agregar_frase') }}" class="btn btn-primary">
+                <span style="font-size: 1.3rem;">+</span> Agregar Nueva Frase
+            </a>
+        </div>
+
+        <div class="frases-grid">
+            {% if frases %}
+                {% for frase in frases %}
+                <div class="frase-card">
+                    <div class="frase-badge">ID: {{ frase.id }}</div>
+                    
+                    <div class="frase-header">
+                        <div class="frase-icon">💬</div>
+                        <h3 class="frase-title">Frase del Día</h3>
+                    </div>
+                    
+                    <div class="frase-text">"{{ frase.frase }}"</div>
+                    <p class="frase-autor">
+                        {% if frase.autor %}
+                            — {{ frase.autor }}
+                        {% else %}
+                            — Anónimo
+                        {% endif %}
+                    </p>
+                    
+                    <div class="meta-info">
+                        <small><strong>Fecha de creación:</strong> {{ frase.fecha_creacion if frase.fecha_creacion else 'No especificada' }}</small>
+                        <div class="status-badge {% if frase.activa %}status-active{% else %}status-inactive{% endif %}">
+                            {{ 'Activa' if frase.activa else 'Inactiva' }}
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <a href="{{ url_for('eliminar_frase', frase_id=frase.id) }}" class="btn btn-danger" 
+                           onclick="return confirm('¿Estás seguro de eliminar esta frase?')">
+                            <span class="btn-icon">🗑️</span> Eliminar
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">
+                    No hay frases registradas
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Ocultar mensajes flash después de 5 segundos con mejor transición
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.transform = 'translateY(-20px)';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 5000);
+
+        // Efectos hover mejorados
+        document.querySelectorAll('.btn, .frase-card, .back-btn, .frase-badge').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                if (this.classList.contains('frase-card')) {
+                    this.style.transform = 'translateY(-8px)';
+                } else {
+                    this.style.transform = 'translateY(-3px)';
+                }
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animación de entrada para las tarjetas
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.frase-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Efecto especial para las frases
+        document.querySelectorAll('.frase-text').forEach(frase => {
+            frase.addEventListener('click', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.background = 'linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(52, 152, 219, 0.3))';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.02)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

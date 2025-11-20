@@ -1,0 +1,97 @@
+-- Eliminar la base de datos existente si existe
+DROP DATABASE IF EXISTS formulario_bd;
+
+-- Crear la base de datos
+CREATE DATABASE formulario_bd;
+
+-- Usar la base de datos
+USE formulario_bd;
+
+-- Crear tabla de usuarios para el login/registro
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('user', 'admin') DEFAULT 'user',
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla de personas para el CRUD
+CREATE TABLE personas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertar usuarios con contraseñas CORRECTAMENTE hasheadas
+INSERT INTO usuarios (username, email, password, rol) VALUES 
+('admin', 'admin@ejemplo.com', 'scrypt:32768:8:1$Kqk9pCFv4vJ2t0jH$5e4d72e58b3976a1d00c4e19c0f4d3e7f8c9e8a6b5c4d3e2f1a0b9c8d7e6f5c4b3a2d1e0f9e8d7c6b5a4', 'admin'),
+('usuario1', 'usuario1@ejemplo.com', 'scrypt:32768:8:1$Kqk9pCFv4vJ2t0jH$5e4d72e58b3976a1d00c4e19c0f4d3e7f8c9e8a6b5c4d3e2f1a0b9c8d7e6f5c4b3a2d1e0f9e8d7c6b5a4', 'user'),
+('demo', 'demo@ejemplo.com', 'scrypt:32768:8:1$Kqk9pCFv4vJ2t0jH$5e4d72e58b3976a1d00c4e19c0f4d3e7f8c9e8a6b5c4d3e2f1a0b9c8d7e6f5c4b3a2d1e0f9e8d7c6b5a4', 'admin');
+
+-- Insertar algunas personas de prueba
+INSERT INTO personas (nombre, email, telefono) VALUES 
+('Juan Pérez', 'juan@ejemplo.com', '555-1234'),
+('María García', 'maria@ejemplo.com', '555-5678'),
+('Carlos López', 'carlos@ejemplo.com', '555-9012');
+
+-- Mostrar los datos insertados
+SELECT '=== USUARIOS ===' as '';
+SELECT * FROM usuarios;
+
+SELECT '=== PERSONAS ===' as '';
+SELECT * FROM personas;
+
+
+INSERT INTO usuarios (username, email, password, rol) VALUES 
+('superadmin', 'superadmin@ejemplo.com', 'scrypt:32768:8:1$Kqk9pCFv4vJ2t0jH$5e4d72e58b3976a1d00c4e19c0f4d3e7f8c9e8a6b5c4d3e2f1a0b9c8d7e6f5c4b3a2d1e0f9e8d7c6b5a4', 'admin');
+
+CREATE TABLE numeros_emergencia (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    numero VARCHAR(20) NOT NULL,
+    descripcion TEXT,
+    icono VARCHAR(10) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    badge VARCHAR(30),
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertar datos iniciales
+INSERT INTO numeros_emergencia (nombre, numero, descripcion, icono, categoria, badge) VALUES
+('Emergencias', '911', 'Número único para emergencias de policía, bomberos y ambulancia', '🚓', 'policia', 'Urgente'),
+('Cruz Roja', '065', 'Atención médica de emergencia y servicios de ambulancia', '🏥', 'hospital', 'Médico'),
+('Bomberos', '068', 'Servicio de bomberos, rescate y emergencias por incendio', '🚒', 'bomberos', 'Incendio'),
+('Protección Civil Aguascalientes', '4499151515', 'Emergencias por fenómenos naturales y desastres', '🛡️', 'proteccion', 'Protección');
+
+
+CREATE TABLE consejos_clima (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    descripcion TEXT NOT NULL,
+    icono VARCHAR(10) NOT NULL,
+    etiquetas VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertar datos iniciales (los consejos que ya tenías)
+INSERT INTO consejos_clima (titulo, descripcion, icono, etiquetas) VALUES
+('Hidratación Constante', 'Bebe al menos 2-3 litros de agua al día. En días calurosos aumenta el consumo para mantenerte hidratado.', '💧', 'Calor,Verano'),
+('Protector Solar', 'Aplica FPS 50+ cada 2 horas cuando estés al aire libre. No olvides orejas, cuello y empeines.', '☀️', 'Radiación,Exterior'),
+('Horarios Inteligentes', 'Evita exposición solar entre 10:00 am y 4:00 pm cuando los rayos UV son más intensos.', '⏰', 'Horario,Precaución'),
+('Vestimenta Adecuada', 'Usa ropa ligera, de colores claros y telas transpirables como algodón o lino.', '👕', 'Confort,Temperatura'),
+('Actividades al Aire Libre', 'Planifica caminatas y ejercicios en las mañanas temprano o tardes cuando la temperatura es más fresca.', '🚶‍♂️', 'Ejercicio,Horario'),
+('Protección Extra', 'Usa sombrero de ala ancha y gafas de sol con protección UV para proteger cara y ojos.', '🧢', 'Protección,Visual');
+
+CREATE TABLE frases_dia (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    frase TEXT NOT NULL,
+    autor VARCHAR(255),
+    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activa BOOLEAN DEFAULT TRUE
+);

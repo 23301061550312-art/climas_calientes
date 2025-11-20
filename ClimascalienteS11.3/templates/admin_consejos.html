@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Consejos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 25, 40, 0.88), rgba(20, 30, 48, 0.92)), 
+                        url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2128&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 90px 30px 50px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .header-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .admin-title {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #4ecdc4, #2ecc71, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .admin-subtitle {
+            opacity: 0.95;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            color: #ecf0f1;
+            max-width: 700px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            min-width: 240px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+            color: white;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.5);
+            background: linear-gradient(135deg, #c0392b, #d35400);
+        }
+
+        /* Botones de acción reducidos */
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: auto;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            margin-right: 8px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: auto;
+        }
+
+        .consejos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 35px;
+            margin-bottom: 60px;
+        }
+
+        .consejo-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            min-height: 320px;
+        }
+
+        .consejo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #4ecdc4, #3498db);
+        }
+
+        .consejo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+            border-color: rgba(78, 205, 196, 0.6);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Icono de consejo reducido */
+        .consejo-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #4ecdc4, #3498db);
+            border-radius: 15px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .consejo-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Títulos y contenido reducidos */
+        .consejo-content h3 {
+            color: #4ecdc4;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .consejo-content p {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 300;
+            flex-grow: 1;
+            overflow: hidden;
+            /* Límite de líneas corregido para compatibilidad */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-clamp: 3;
+            max-height: 4.5em; /* Fallback para navegadores que no soportan line-clamp */
+        }
+
+        .etiquetas {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        /* Etiquetas reducidas */
+        .etiqueta {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(155, 89, 182, 0.4));
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .etiqueta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            padding: 16px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Badge de estado reducido */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.4);
+            color: #2ecc71;
+            border-color: #2ecc71;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .status-inactive {
+            background: rgba(149, 165, 166, 0.4);
+            color: #ecf0f1;
+            border-color: #bdc3c7;
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .flash-messages {
+            margin-bottom: 35px;
+        }
+
+        .flash-message {
+            padding: 24px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            font-size: 1.2rem;
+            line-height: 1.5;
+            transition: all 0.4s ease;
+        }
+
+        .flash-message.success {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+            color: white;
+            border-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .flash-message.error {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
+            color: white;
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+
+        /* Información meta reducida */
+        .meta-info {
+            margin: 12px 0;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-info small {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.75rem;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        /* Efectos climáticos mejorados */
+        .weather-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 90%, rgba(78, 205, 196, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(52, 152, 219, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 30% 30%, rgba(46, 204, 113, 0.1) 0%, transparent 40%);
+            opacity: 0.6;
+        }
+
+        /* Contador de consejos */
+        .consejos-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        .consejos-count span {
+            font-weight: 700;
+            color: #4ecdc4;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .consejos-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .consejo-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+                min-height: auto;
+            }
+            
+            .consejo-icon {
+                align-self: center;
+                margin-bottom: 15px;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .admin-title {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                min-width: auto;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 70px 20px 40px;
+            }
+            
+            .consejo-card {
+                padding: 18px;
+            }
+            
+            .consejos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-title {
+                font-size: 1.8rem;
+            }
+            
+            /* Reducciones adicionales para móviles */
+            .consejo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .consejo-content h3 {
+                font-size: 1.1rem;
+            }
+            
+            .consejo-content p {
+                font-size: 0.85rem;
+                max-height: 3.8em; /* Ajustado para móviles */
+            }
+            
+            .btn-edit, .btn-danger {
+                padding: 7px 10px;
+                font-size: 0.7rem;
+            }
+            
+            .meta-info small {
+                font-size: 0.7rem;
+            }
+            
+            .status-badge, .etiqueta {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efecto climático de fondo mejorado -->
+    <div class="weather-overlay"></div>
+    
+    <div class="admin-container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-btn">
+            <span>←</span> Volver al Dashboard Principal
+        </a>
+
+        <div class="admin-header">
+            <div class="header-content">
+                <h1 class="admin-title">Administración de Consejos</h1>
+                <p class="admin-subtitle">
+                    Gestión integral de consejos climáticos para optimizar la experiencia del usuario 
+                    y mantener información actualizada y relevante.
+                </p>
+                <div class="consejos-count">
+                    Total de consejos: <span>{{ consejos|length }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('agregar_consejo') }}" class="btn btn-primary">
+                <span style="font-size: 1.3rem;">+</span> Agregar Nuevo Consejo
+            </a>
+        </div>
+
+        <div class="consejos-grid">
+            {% for consejo in consejos %}
+            <div class="consejo-card">
+                <div class="consejo-icon">{{ consejo.icono }}</div>
+                <div class="consejo-content">
+                    <div class="status-badge {% if consejo.activo %}status-active{% else %}status-inactive{% endif %}">
+                        {{ 'Activo' if consejo.activo else 'Inactivo' }}
+                    </div>
+                    
+                    <h3>{{ consejo.titulo }}</h3>
+                    <p>{{ consejo.descripcion }}</p>
+                    
+                    {% if consejo.etiquetas %}
+                    <div class="etiquetas">
+                        {% for etiqueta in consejo.etiquetas.split(',') %}
+                            <span class="etiqueta">{{ etiqueta.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="meta-info">
+                        <small>
+                            ID: {{ consejo.id }} | 
+                            Creado: {{ consejo.fecha_creacion.strftime('%d/%m/%Y') if consejo.fecha_creacion else 'N/A' }}
+                        </small>
+                    </div>
+                    
+                    <div class="actions">
+                        <a href="{{ url_for('editar_consejo', consejo_id=consejo.id) }}" class="btn btn-edit">✏️ Editar</a>
+                        <a href="{{ url_for('eliminar_consejo', consejo_id=consejo.id) }}" class="btn btn-danger" 
+                           onclick="return confirm('¿Estás seguro de eliminar este consejo?')">🗑️ Eliminar</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Ocultar mensajes flash después de 5 segundos con mejor transición
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.transform = 'translateY(-20px)';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 5000);
+
+        // Efectos hover mejorados
+        document.querySelectorAll('.btn, .consejo-card, .back-btn, .etiqueta').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                if (this.classList.contains('consejo-card')) {
+                    this.style.transform = 'translateY(-8px)';
+                } else {
+                    this.style.transform = 'translateY(-3px)';
+                }
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animación de entrada para las tarjetas
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.consejo-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
